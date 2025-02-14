@@ -1,7 +1,6 @@
 import {
   mdiAccountCircle,
   mdiMonitor,
-  mdiGithub,
   mdiLock,
   mdiAlertCircle,
   mdiSquareEditOutline,
@@ -10,7 +9,8 @@ import {
   mdiTelevisionGuide,
   mdiResponsive,
   mdiPalette,
-  mdiReact
+  mdiTagArrowDown,
+  mdiTagArrowUp
 } from '@mdi/js'
 
 export default [
@@ -18,6 +18,16 @@ export default [
     to: '/dashboard',
     icon: mdiMonitor,
     label: 'Dashboard'
+  },
+  {
+    to:'/create-rfq',
+    icon:mdiTagArrowDown,
+    label:'Create RFQ'
+  },
+  {
+    to:'/request-rfq',
+    icon:mdiTagArrowUp,
+    label:'Request RFQ'
   },
   {
     to: '/tables',
@@ -70,17 +80,5 @@ export default [
         label: 'Item Two'
       }
     ]
-  },
-  {
-    href: 'https://github.com/justboil/admin-one-vue-tailwind',
-    label: 'GitHub',
-    icon: mdiGithub,
-    target: '_blank'
-  },
-  {
-    href: 'https://github.com/justboil/admin-one-react-tailwind',
-    label: 'React version',
-    icon: mdiReact,
-    target: '_blank'
   }
 ]

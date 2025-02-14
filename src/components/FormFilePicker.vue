@@ -45,11 +45,25 @@ watch(modelValueProp, (value) => {
   }
 })
 
-const upload = (event) => {
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            // `reader.result` will be something like: "data:application/pdf;base64,AAAA..."
+            // or "data:image/png;base64,iVBORw0KGgo..."
+            resolve(reader.result);
+        };
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
+
+const upload = async (event) => {
   const value = event.target.files || event.dataTransfer.files
 
   file.value = value[0]
-
+  const base64files = await fileToBase64(value[0])
+  file.value.base64 = base64files
   emit('update:modelValue', file.value)
 
   // Use this as an example for handling file uploads

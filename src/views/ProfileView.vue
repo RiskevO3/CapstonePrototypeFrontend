@@ -28,6 +28,7 @@ const passwordForm = reactive({
 })
 
 const submitProfile = () => {
+  console.log('submitProfile', profileForm)
   mainStore.setUser(profileForm)
 }
 

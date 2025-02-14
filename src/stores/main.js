@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
 
 export const useMainStore = defineStore('main', () => {
-  const userName = ref('John Doe')
-  const userEmail = ref('doe.doe.doe@example.com')
-
+  const baseApiUrl = 'http://localhost:5173/api'
+  const userName = ref('')
+  const userEmail = ref('')
+  const accessToken = ref('')
   const userAvatar = computed(
     () =>
       `https://api.dicebear.com/7.x/avataaars/svg?seed=${userEmail.value.replace(
@@ -18,6 +20,98 @@ export const useMainStore = defineStore('main', () => {
 
   const clients = ref([])
   const history = ref([])
+
+  const loginHandler = async (email, password) => {
+    try {
+      const req = await axios.post(`${baseApiUrl}/Auth/login`, { email, password })
+      if (req.status == 200) {
+        console.log(req)
+        localStorage.setItem('accessToken', req.data.data.accessToken)
+        await isLoggedIn()
+        return ''
+      }
+    } catch (error) {
+      console.log('error', error)
+      return error.response.data.message ?? 'An error occurred'
+    }
+  }
+
+  const registerHandler = async (registerForm)=>
+  {
+    try
+    {
+      const req = await axios.post(`${baseApiUrl}/Auth/register`, {...registerForm})
+      if(req.status == 200)
+      {
+        localStorage.setItem('accessToken', req.data.data.accessToken)
+        await isLoggedIn()
+        return ''
+      }
+      return req.data.message ?? 'An error occurred'
+    }
+    catch(error)
+    {
+      console.log('error', error)
+      return error.response.data.message ?? 'An error occurred'
+    }
+  }
+
+  const isLoggedIn = async () => {
+    let accessTokenStorage = localStorage.getItem('accessToken')
+    if (accessTokenStorage) {
+      const decodedJwt = jwtDecode(accessTokenStorage)
+      if (Date.now() >= decodedJwt.exp * 1000) {
+        console.log('Token expired')
+        localStorage.removeItem('accessToken')
+        return false
+      }
+      userName.value = decodedJwt.firstName
+      userEmail.value = decodedJwt.email
+      console.log('decodedJwt', decodedJwt)
+      accessToken.value = accessTokenStorage
+      return true
+    }
+    console.log('No token found')
+    return false
+  }
+
+  const setAccessToken = (token) => {
+    accessToken.value = token
+    localStorage.setItem('accessToken', token)
+  }
+
+  const removeAccessToken = () => {
+    accessToken.value = ''
+    localStorage.removeItem('accessToken')
+  }
+
+  const useApi = async (path, method, data) => {
+    try {
+      const config = {
+        method: method,
+        url: `${baseApiUrl}/${path}`,
+        headers: {
+          Authorization: `Bearer ${accessToken.value}`
+        }
+      }
+      console.log("config", config)
+
+      if (method.toUpperCase() === 'GET' && data) {
+        config.params = data
+      } else if (data) {
+        config.data = data
+      }
+
+      const req = await axios(config)
+
+      if (req.status === 200) {
+        return req.data
+      }
+    } catch (error) {
+      console.log('error', error)
+      return error.response?.data?.message ?? 'An error occurred'
+    }
+  }
 
   function setUser(payload) {
     if (payload.name) {
@@ -57,8 +151,15 @@ export const useMainStore = defineStore('main', () => {
     isFieldFocusRegistered,
     clients,
     history,
+    accessToken,
+    loginHandler,
     setUser,
     fetchSampleClients,
-    fetchSampleHistory
+    fetchSampleHistory,
+    isLoggedIn,
+    setAccessToken,
+    removeAccessToken,
+    useApi,
+    registerHandler
   }
 })

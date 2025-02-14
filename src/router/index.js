@@ -1,15 +1,25 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Style from '@/views/StyleView.vue'
+// import Style from '@/views/StyleView.vue'
 import Home from '@/views/HomeView.vue'
+import LoginView from '@/views/LoginView.vue'
+import RequestRfqView from '@/views/RequestRfqView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 
 const routes = [
+  // {
+  //   meta: {
+  //     title: 'Select style'
+  //   },
+  //   path: '/',
+  //   name: 'style',
+  //   component: Style
+  // },
   {
     meta: {
-      title: 'Select style'
+      title: 'Home'
     },
     path: '/',
-    name: 'style',
-    component: Style
+    component:LoginView
   },
   {
     // Document title tag
@@ -28,6 +38,22 @@ const routes = [
     path: '/tables',
     name: 'tables',
     component: () => import('@/views/TablesView.vue')
+  },
+  {
+    meta:{
+      title:'Create RFQ'
+    },
+    path:'/create-rfq',
+    name:'create-rfq',
+    component:()=>import('@/views/CreateRFQView.vue')
+  },
+  {
+    meta:{
+      title:'Request RFQ'
+    },
+    path:'/request-rfq',
+    name:'request-rfq',
+    component:RequestRfqView
   },
   {
     meta: {
@@ -68,6 +94,14 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/LoginView.vue')
+  },
+  {
+    meta: {
+      title: 'Register'
+    },
+    path: '/register',
+    name: 'register',
+    component: RegisterView
   },
   {
     meta: {

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { getButtonColor } from '@/colors.js'
 import BaseIcon from '@/components/BaseIcon.vue'
+import LoadingComp from './LoadingComp.vue';
 
 const props = defineProps({
   label: {
@@ -45,7 +46,11 @@ const props = defineProps({
   outline: Boolean,
   active: Boolean,
   disabled: Boolean,
-  roundedFull: Boolean
+  roundedFull: Boolean,
+  isLoading:{
+    type:Boolean,
+    default:false
+  }
 })
 
 const is = computed(() => {
@@ -116,7 +121,12 @@ const componentClass = computed(() => {
     :target="target"
     :disabled="disabled"
   >
+  <template v-if="!isLoading">
     <BaseIcon v-if="icon" :path="icon" :size="iconSize" />
     <span v-if="label" :class="labelClass">{{ label }}</span>
+  </template>
+  <template v-else>
+    <LoadingComp />
+  </template>
   </component>
 </template>

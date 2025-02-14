@@ -11,11 +11,11 @@ import NavBar from '@/components/NavBar.vue'
 import NavBarItemPlain from '@/components/NavBarItemPlain.vue'
 import AsideMenu from '@/components/AsideMenu.vue'
 import FooterBar from '@/components/FooterBar.vue'
+import { useMainStore } from '@/stores/main'
 
 const layoutAsidePadding = 'xl:pl-60'
-
+const mainStore = useMainStore()
 const darkModeStore = useDarkModeStore()
-
 const router = useRouter()
 
 const isAsideMobileExpanded = ref(false)
@@ -32,7 +32,8 @@ const menuClick = (event, item) => {
   }
 
   if (item.isLogout) {
-    //
+    mainStore.removeAccessToken()
+    router.push('/login')
   }
 }
 </script>
@@ -74,10 +75,6 @@ const menuClick = (event, item) => {
       />
       <slot />
       <FooterBar>
-        Get more with
-        <a href="https://tailwind-vue.justboil.me/" target="_blank" class="text-blue-600"
-          >Premium version</a
-        >
       </FooterBar>
     </div>
   </div>

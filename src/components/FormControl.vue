@@ -44,6 +44,10 @@ const props = defineProps({
     type: [String, Number, Boolean, Array, Object],
     default: ''
   },
+  disabled:{
+    type: Boolean,
+    default: false
+  },
   required: Boolean,
   borderless: Boolean,
   transparent: Boolean,
@@ -67,7 +71,7 @@ const inputElClass = computed(() => {
     props.borderless ? 'border-0' : 'border',
     props.transparent ? 'bg-transparent' : 'bg-white dark:bg-slate-800'
   ]
-
+  base.push('disabled:cursor-not-allowed disabled:bg-gray-200 dark:disabled:bg-slate-900')
   if (props.icon) {
     base.push('pl-10')
   }
@@ -131,9 +135,10 @@ if (props.ctrlKFocus) {
       v-model="computedValue"
       :name="name"
       :class="inputElClass"
+      :disabled="props.disabled"
     >
       <option v-for="option in options" :key="option.id ?? option" :value="option">
-        {{ option.label ?? option }}
+        {{ option.label ? option.label : option.name ?? option }}
       </option>
     </select>
     <textarea
@@ -145,6 +150,7 @@ if (props.ctrlKFocus) {
       :maxlength="maxlength"
       :placeholder="placeholder"
       :required="required"
+      :disabled="props.disabled"
     />
     <input
       v-else
@@ -159,6 +165,7 @@ if (props.ctrlKFocus) {
       :placeholder="placeholder"
       :type="computedType"
       :class="inputElClass"
+      :disabled="props.disabled"
     />
     <FormControlIcon v-if="icon" :icon="icon" :h="controlIconH" />
   </div>
